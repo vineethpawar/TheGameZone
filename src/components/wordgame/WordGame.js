@@ -1,13 +1,15 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { useCountdownTimer } from 'use-countdown-timer';
 import randomWords from 'random-words'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
-import './Game.css'
-var i = 0;
-var next;
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import Swal from 'sweetalert2'
+import './WordGame.css'
+import { Link } from 'react-router-dom';
+
 var gameOn = true;
 var firstPart = true;
 var timePerPlayer = 5;
@@ -17,25 +19,37 @@ var tryLimit = 200;
 var playerHearts = 3;
 var totalHearts = 3;
 var cpuHearts = 3;
-function Game() {
+var next;
 
-    const { countdown, start, reset, pause, isRunning } = useCountdownTimer({
+
+function WordGame({ noOfLetters = 2, life = 3, allowedTime = 5, easyMode = true }) {
+
+    useEffect(() => {
+        gameOn = true;
+        firstPart = easyMode;
+        timePerPlayer = allowedTime;
+        letterLimit = noOfLetters;
+        computerSmartness = 1500;
+        tryLimit = 200;
+        playerHearts = life;
+        totalHearts = life;
+        cpuHearts = life;
+
+        inputRef.current.focus();
+        pause()
+        setRandomWord(randomWords())
+    }, [])
+
+
+    const inputRef = useRef();
+    const { countdown, start, reset, pause } = useCountdownTimer({
         timer: 1000 * timePerPlayer, autostart: true, onExpire: () => {
-            toast.error('Time expired', {
-                position: "top-center",
-                autoClose: 800,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: false,
-                draggable: true,
-                progress: undefined,
-            });
+            throwError('Time expired');
             playerHearts -= 1;
             checkLife();
             if (playerHearts > 0) {
                 resetTimer();
                 setActivePlayer(1)
-                setFeedback('Success')
                 next = randomWords()
                 setRandomWord(next)
 
@@ -49,27 +63,35 @@ function Game() {
         expireImmediate: false
     });
 
+
     const checkLife = () => {
+
+
         if (playerHearts === 0) {
             gameOn = false;
-            alert('You Lost')
+            pause();
+            setInputText('Loser')
+            setComputerGenerated('Winner')
+            setPlayerImage('https://res.cloudinary.com/dpjkblzgf/image/upload/v1628336117/sadperson_j6ec1b.gif')
+            setCpuImage('https://res.cloudinary.com/dpjkblzgf/image/upload/v1628336120/happyrobot_bofksx.gif')
+            Swal.fire('You Lost').then(() => window.location.reload())
         }
         else if (cpuHearts === 0) {
             gameOn = false;
-            alert('You Won')
+            pause();
+            setInputText('Winner')
+            setComputerGenerated('Loser')
+            setPlayerImage('https://res.cloudinary.com/dpjkblzgf/image/upload/v1628336119/happyperson_douuil.gif')
+            setCpuImage('https://res.cloudinary.com/dpjkblzgf/image/upload/v1628336116/sadrobot_fw50by.gif')
+            Swal.fire('You Won').then(() => window.location.reload())
         }
     }
-
+    const [playerImage, setPlayerImage] = useState("https://res.cloudinary.com/dpjkblzgf/image/upload/v1628277374/person_f2pneg.png")
+    const [cpuImage, setCpuImage] = useState("https://res.cloudinary.com/dpjkblzgf/image/upload/v1628278268/robot_hp6q1q.png")
     const [inputText, setInputText] = useState('');
     const [randomWord, setRandomWord] = useState('');
     const [computerGenerated, setComputerGenerated] = useState('')
-    const [feedback, setFeedback] = useState('')
     const [activePlayer, setActivePlayer] = useState(0)
-    const [meaning, setMeaning] = useState([])
-    useEffect(() => {
-        pause()
-        setRandomWord(randomWords())
-    }, [])
 
 
 
@@ -78,15 +100,34 @@ function Game() {
         start();
     }
 
+    const switch2User = () => {
+        setTimeout(() => {
+            setActivePlayer(0)
+            setRandomWord(randomWords())
+            setComputerGenerated('')
+            resetTimer()
+        }, 500);
+    }
+
+    const throwError = (arg) => {
+        toast.error(arg, {
+            position: "top-center",
+            autoClose: 800,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: false,
+            draggable: true,
+            progress: undefined,
+        });
+    }
+
     const displayHearts = (playerHearts, totalHearts) => {
         let hearts = [];
         for (let x = 0; x < playerHearts; x++)
             hearts.push(<FavoriteIcon className="hearts__icn" />)
         for (let x = playerHearts; x < totalHearts; x++)
             hearts.push(<FavoriteBorderIcon className="hearts__icn" />)
-
         return hearts;
-
     }
 
     const computerThought = (phrase, tries, current) => {
@@ -99,35 +140,27 @@ function Game() {
                 if (!temp.includes(phrase))
                     computerThought(phrase, tries + 1, temp);
                 else {
-
-                    setTimeout(() => {
-                        setActivePlayer(0)
-                        setRandomWord(randomWords())
-                        setComputerGenerated('')
-                        resetTimer()
-                    }, 500);
-
+                    switch2User();
                 }
-
             } else {
-                setTimeout(() => {
-                    setActivePlayer(0)
-                    setRandomWord(randomWords())
-                    setComputerGenerated('')
-                    resetTimer()
-                }, 500);
+                switch2User();
             }
 
         } else {
             setComputerGenerated('Failed !!')
             cpuHearts -= 1;
             checkLife();
-            setTimeout(() => {
-                setActivePlayer(0)
-                setRandomWord(randomWords())
-                setComputerGenerated('')
-                resetTimer()
-            }, 1500);
+            if (cpuHearts > 0) {
+                setTimeout(() => {
+                    setActivePlayer(0)
+                    setRandomWord(randomWords())
+                    setComputerGenerated('')
+                    resetTimer()
+                }, 1500);
+            } else {
+                pause();
+            }
+
         }
     }
     const submitHandler = (e) => {
@@ -141,27 +174,16 @@ function Game() {
                     if (response.status === 200) {
                         resetTimer();
                         setActivePlayer(1)
-                        setFeedback('Success')
                         next = randomWords()
                         setRandomWord(next)
-
                         setInputText('');
-
                         setTimeout(() => {
                             computerThought(firstPart === true ? next.slice(0, letterLimit) : next.slice(-letterLimit), 1, computerGenerated);
                         }, computerSmartness);
 
                     }
                     else {
-                        toast.error('Not a dictionary word', {
-                            position: "top-center",
-                            autoClose: 800,
-                            hideProgressBar: false,
-                            closeOnClick: true,
-                            pauseOnHover: false,
-                            draggable: true,
-                            progress: undefined,
-                        });
+                        throwError('Not a dictionary word!!');
                         setInputText('');
                         playerHearts -= 1;
                         checkLife();
@@ -170,15 +192,7 @@ function Game() {
                 })
 
         } else {
-            toast.error('Does not contain phrase', {
-                position: "top-center",
-                autoClose: 800,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: false,
-                draggable: true,
-                progress: undefined,
-            });
+            throwError('Does not contain keyword');
             setInputText('');
             playerHearts -= 1;
             checkLife();
@@ -187,37 +201,32 @@ function Game() {
     }
     return (
         <div className="game__wrapper">
-
+            <Link to="/">
+                <div className="back"><ExitToAppIcon className="exit__app" /> </div>
+            </Link>
             <div className="compass">
-                <img className={activePlayer === 0 ? "compass__img" : "compass__img rotate__right"} src="https://res.cloudinary.com/dpjkblzgf/image/upload/v1628314946/compass_rokfyq_xcxdk1.png" />
+                <img className={activePlayer === 0 ? "compass__img" : "compass__img rotate__right"} alt="compass" src="https://res.cloudinary.com/dpjkblzgf/image/upload/v1628314946/compass_rokfyq_xcxdk1.png" />
                 <span>{firstPart === true ? randomWord.slice(0, letterLimit) : randomWord.slice(-letterLimit)}</span>
             </div>
 
-            <div className="game">
 
+            <div className="game">
                 <div className={activePlayer === 0 ? "leftScreen active" : "leftScreen"}>
                     <h1 className="turn">Your turn </h1>
-                    <img className="porfile__pic" src="https://res.cloudinary.com/dpjkblzgf/image/upload/v1628277374/person_f2pneg.png" />
+                    <img className="profile__pic" src={playerImage} alt="user profile" />
                     <div className="centeredContent">
                         <span>
-                            <h1 className="guess">{inputText ? inputText : null} &nbsp;</h1>
+                            {inputText.length > 0 ?
+                                <h1 className="guess">{inputText}</h1>
+                                :
+                                <h1 className="guess">&nbsp;</h1>
+                            }
+
                             <div classnmae="hearts">
                                 {displayHearts(playerHearts, totalHearts)}
                             </div>
                         </span>
 
-                        {/* <h2>Feedback: {feedback}</h2> */}
-
-
-                        {/* <h2>Meaning: </h2>
-                    {meaning.map(meaningItem =>
-                        <h3 key={++i}>{meaningItem}</h3>
-                    )} */}
-
-
-                        {/* <div>{countdown / 1000}</div>
-                                <button onClick={start}>Start</button>
-                                <button onClick={resetTimer}>Reset</button> */}
                         <div className="centeredContentDiv">
                             {activePlayer === 0 ? countdown / 1000 : timePerPlayer}
                         </div>
@@ -238,7 +247,7 @@ function Game() {
 
                 <div className={activePlayer === 0 ? "rightScreen" : "rightScreen active"}>
                     <h1 className="turn">CPU turn</h1>
-                    <img className="porfile__pic" src="https://res.cloudinary.com/dpjkblzgf/image/upload/v1628278268/robot_hp6q1q.png" />
+                    <img className="profile__pic" src={cpuImage} alt="cpu" />
 
                     <div className="centeredContent">
                         <span>
@@ -247,18 +256,8 @@ function Game() {
                                 {displayHearts(cpuHearts, totalHearts)}
                             </div>
                         </span>
-                        {/* <h2>Feedback: {feedback}</h2> */}
 
 
-                        {/* <h2>Meaning: </h2>
-                    {meaning.map(meaningItem =>
-                        <h3 key={++i}>{meaningItem}</h3>
-                    )} */}
-
-
-                        {/* <div>{countdown / 1000}</div>
-                                <button onClick={start}>Start</button>
-                                <button onClick={resetTimer}>Reset</button> */}
                         <div className="centeredContentDiv">
                             {activePlayer === 1 ? countdown / 1000 : timePerPlayer}
                         </div>
@@ -269,12 +268,12 @@ function Game() {
             </div>
 
             <div className="input__footer">
-                <form onSubmit={gameOn == true ? (e) => submitHandler(e) : (e) => { e.preventDefault(); }}>
+                <form onSubmit={gameOn === true && activePlayer === 0 ? (e) => submitHandler(e) : (e) => { e.preventDefault(); }}>
                     <div className="input__container">
                         {activePlayer === 0 && gameOn === true ?
-                            <input id="inputID" type="text" value={inputText} onChange={(e) => setInputText(e.target.value.toLowerCase())} />
+                            <input ref={inputRef} id="inputID" type="text" value={gameOn === true ? inputText : ''} onChange={(e) => setInputText(e.target.value.toLowerCase())} />
                             :
-                            <input id="inputID" type="text" value={inputText} />
+                            <input ref={inputRef} id="inputID" type="text" value={gameOn === true ? inputText : ''} />
                         }
 
                     </div>
@@ -285,4 +284,4 @@ function Game() {
     )
 }
 
-export default Game
+export default WordGame
