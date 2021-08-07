@@ -170,7 +170,7 @@ function WordGame({ noOfLetters = 2, life = 3, allowedTime = 5, easyMode = true 
 
             fetch(`https://api.dictionaryapi.dev/api/v2/entries/en_US/${inputText}`)
                 .then((response) => {
-                    console.log(response)
+                  
                     if (response.status === 200) {
                         resetTimer();
                         setActivePlayer(1)
