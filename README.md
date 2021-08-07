@@ -1,7 +1,7 @@
 ## TGZ - The Game Zone
 
-This is a mini game list I made using React JS and JavaScript.
-This project is hosted at url: https://the-game-zone.netlify.app/ using CRA. 
+This is a mini game list I made using React JS and JavaScript using CRA.
+This project is hosted at url: https://the-game-zone.netlify.app/ using Netlify. 
 
 This project has 3 games as of now.
 Video Demo - https://youtu.be/DJ_k4-sDC5w
