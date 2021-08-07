@@ -20,6 +20,10 @@
     flex:0.5;
 }
 
+.hearts__icn{
+color:red;
+}
+
 .rightScreen{
     flex:0.5;
 }
@@ -95,18 +99,22 @@
     
 }
 
+.centeredContent>span{
+text-align: center;
+}
+
 .centeredContent{
     padding-top: 30px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
 }
 
 .centeredContentDiv{
-   display: flex;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: auto;
+    margin-right: auto;
+   text-align: center;
    color:white;
-   justify-content: center;
-   align-items: center;
    margin-top: 50px;
    height: 50px;
    width: 50px;
