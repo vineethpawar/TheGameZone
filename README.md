@@ -1,8 +1,41 @@
-# Getting Started with Create React App
+## TGZ - The Game Zone
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This is a mini game list I made using React JS and JavaScript.
+This project is hosted at url: https://the-game-zone.netlify.app/ using CRA. 
 
-## Available Scripts
+This project has 3 games as of now.
+Video Demo - https://youtu.be/DJ_k4-sDC5w
+
+## Technologies used
+
+1. FrontEnd - React JS, Material Icons, JavaScript, React-router, CRA
+2. API - https://api.dictionaryapi.dev/api/v2/entries/en_US/<word>
+
+
+## Games list
+
+1. Word Game - made with CRA. Uses dictionary API to verify legitimacy of entered word and randomWords (npm package) to generate words from CPU Side.
+2. Rock Paper Scissor - This game was made with HTML, CSS, JavaScript. This was my very first cool project made in the start of 3rd year Engg ( Sept 2020 ) linked to this app via iframe.
+3. Guess It - This game was made with HTML, CSS, JavaScript. This mainly deals with generating a random number using Math.random() and guessing it linked via iframe. 
+
+
+
+
+## Screenshots
+1.Menu Screen
+![Screenshot_12](https://user-images.githubusercontent.com/55575881/128611821-2984c73a-a14c-4734-804e-e1a3c4e64760.png)
+
+2.Word Game
+![Screenshot_13](https://user-images.githubusercontent.com/55575881/128611834-d651b9e9-5b6f-445a-80ae-3a8d231e83b2.png)
+
+3.Rock Paper Scissor Game
+![Screenshot_14](https://user-images.githubusercontent.com/55575881/128611845-f1e68d7d-4d79-4772-a4c9-c88946ff1d65.png)
+
+4.Guess It Game
+![Screenshot_15](https://user-images.githubusercontent.com/55575881/128611868-678d5157-2b73-4754-93ce-5339056843b2.png)
+
+
+## Note for Developers
 
 In the project directory, you can run:
 
@@ -14,57 +47,13 @@ Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 The page will reload if you make edits.\
 You will also see any lint errors in the console.
 
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
 ### `npm run build`
 
 Builds the app for production to the `build` folder.\
 It correctly bundles React in production mode and optimizes the build for the best performance.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
-### `npm run eject`
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
