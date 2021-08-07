@@ -7,7 +7,7 @@ var i = 0;
 function Game() {
 
     const { countdown, start, reset, pause, isRunning } = useCountdownTimer({
-        timer: 1000 * 5, autostart: true, onExpire: () => { }, expireImmediate: false
+        timer: 1000 * 8, autostart: true, onExpire: () => { alert('Expired~~ You lost') }, expireImmediate: false
     });
 
 
@@ -24,7 +24,10 @@ function Game() {
 
 
 
-
+    const resetTimer = () => {
+        reset();
+        start();
+    }
 
 
     const computerThought = (phrase, tries, current) => {
@@ -43,8 +46,7 @@ function Game() {
                         setActivePlayer(0)
                         setRandomWord(randomWords())
                         setComputerGenerated('')
-
-
+                        resetTimer()
                     }, 2500);
 
                 }
@@ -75,7 +77,7 @@ function Game() {
                         setFeedback('Success')
                         let next = randomWords()
                         setRandomWord(next)
-
+                        resetTimer()
                         Axios.get(`https://api.dictionaryapi.dev/api/v2/entries/en_US/${inputText}`)
                             .then(response => setMeaning(response.data.map(data => data.meanings.map(meaning => meaning.definitions.map(def => def.definition)))))
 
@@ -102,36 +104,70 @@ function Game() {
 
     }
     return (
-        <div className="game">
+        <div className="game__wrapper">
+            <div className="compass">
+                <img className={activePlayer === 0 ? "compass__img" : "compass__img rotate__right"} src="https://res.cloudinary.com/dpjkblzgf/image/upload/v1628278873/compass_rokfyq.png" />
+            </div>
+
+            <div className="game">
+
+                <div className={activePlayer === 0 ? "leftScreen active" : "leftScreen"}>
+                    <h1 className="turn">Your turn </h1>
+                    <img className="porfile__pic" src="https://res.cloudinary.com/dpjkblzgf/image/upload/v1628277374/person_f2pneg.png" />
+                    <h1>{randomWord.slice(0, 2)}</h1>
+                    <h2>Computer Generated : {computerGenerated}</h2>
+                    <h2>Feedback: {feedback}</h2>
 
 
-            {/* <h1>{activePlayer === 0 ? 'Your turn' : 'CPU turn'}</h1>
-            <h1>{randomWord.slice(0, 2)}</h1>
-            <h2>Computer Generated : {computerGenerated}</h2>
-            <h2>Feedback: {feedback}</h2>
-            <form onSubmit={(e) => submitHandler(e)}>
-                <div className="input__container">
-                    {activePlayer === 0 ?
-                        <input id="inputID" type="text" value={inputText} onChange={(e) => setInputText(e.target.value)} />
-                        :
-                        <input id="inputID" type="text" value={inputText} />
-                    }
+                    <h2>Meaning: </h2>
+                    {meaning.map(meaningItem =>
+                        <h3 key={++i}>{meaningItem}</h3>
+                    )}
 
+
+
+                    <div>{countdown / 1000}</div>
+                    <button onClick={start}>Start</button>
+                    <button onClick={resetTimer}>Reset</button>
                 </div>
-                <button>Push</button>
-            </form>
-
-            <h2>Meaning: </h2>
-            {meaning.map(meaningItem =>
-                <h3 key={++i}>{meaningItem}</h3>
-            )} */}
 
 
-          
-                <div>{countdown / 1000}</div>
-            
+                <div className={activePlayer === 0 ? "rightScreen" : "rightScreen active"}>
+                    <h1 className="turn">CPU turn</h1>
+                    <img className="porfile__pic" src="https://res.cloudinary.com/dpjkblzgf/image/upload/v1628278268/robot_hp6q1q.png" />
+
+                    <h1>{randomWord.slice(0, 2)}</h1>
+                    <h2>Computer Generated : {computerGenerated}</h2>
+                    <h2>Feedback: {feedback}</h2>
 
 
+                    <h2>Meaning: </h2>
+                    {meaning.map(meaningItem =>
+                        <h3 key={++i}>{meaningItem}</h3>
+                    )}
+
+
+
+                    <div>{countdown / 1000}</div>
+                    <button onClick={start}>Start</button>
+                    <button onClick={resetTimer}>Reset</button>
+                </div>
+
+            </div>
+
+            <div className="input__footer">
+                <form onSubmit={(e) => submitHandler(e)}>
+                    <div className="input__container">
+                        {activePlayer === 0 ?
+                            <input id="inputID" type="text" value={inputText} onChange={(e) => setInputText(e.target.value)} />
+                            :
+                            <input id="inputID" type="text" value={inputText} />
+                        }
+
+                    </div>
+                    <button className="post__btn">Submit</button>
+                </form>
+            </div>
         </div>
     )
 }

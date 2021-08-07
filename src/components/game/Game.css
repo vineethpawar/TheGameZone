@@ -1,0 +1,123 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
+
+.game__wrapper{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100vh;
+    color: rgb(46, 45, 45);
+}
+
+.game{
+    display: flex;
+    width: 100%;
+    height: 100%;
+    background-color: rgb(46, 45, 45);
+}
+
+.leftScreen{
+    flex:0.5;
+}
+
+.rightScreen{
+    flex:0.5;
+}
+
+.active{
+    background-color: rgb(115, 178, 230);
+}
+
+.input__footer{
+    display: flex;
+    width: 100%;
+    background-color: rgb(46, 45, 45);
+}
+
+.input__footer > form{
+   display: flex;
+   width: 100%;
+  
+}
+
+.input__container{
+    display: flex;
+    height: 30px;
+    width: 100%;
+    border:1px solid lightgrey;
+    border-radius: 30px;
+    margin: 4px;
+    padding: 0 15px;
+    background-color: #fff;
+    
+}
+
+#inputID{
+    height: 100%;
+    width: 100%;
+    border:none;
+    outline:none;
+    font-size: 16px;
+    color:rgb(59, 59, 59);
+}
+
+.post__btn{
+    margin: 4px;
+    color:white;
+    border-radius: 5px;
+    padding: 5px 15px;
+    background-color: rgb(25, 101, 172);
+    border:none;
+    outline:none;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.turn{
+  
+    font-size: 50px;
+    font-family: 'Montserrat', sans-serif;
+    text-align: center;
+}
+
+.porfile__pic{
+    height: auto;
+    width: 250px;
+    display: flex;
+    margin-top: 30px;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 50%;
+    -webkit-user-drag: none;
+    -khtml-user-drag: none;
+    -moz-user-drag: none;
+    -o-user-drag: none;
+    
+}
+
+
+
+.compass__img{
+    user-select: none;
+    -webkit-user-drag: none;
+    -khtml-user-drag: none;
+    -moz-user-drag: none;
+    -o-user-drag: none;
+    position:absolute;
+    height: auto;
+    width: 250px;  
+    border-radius: 50%;
+    display: flex;
+    top:50%;
+    left:50%;
+    transition:1s all ease-in-out;
+    transform: translate(-50%,-50%) rotate(-90deg);
+}
+
+.rotate__right{
+    transform: translate(-50%,-50%) rotate(90deg);
+}
+
+.rotate__left{
+    transform: translate(-50%,-50%) rotate(-90deg);
+}
