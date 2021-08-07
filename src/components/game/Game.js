@@ -1,13 +1,19 @@
 import React, { useState, useEffect } from 'react'
-import Axios from 'axios'
 import { useCountdownTimer } from 'use-countdown-timer';
 import randomWords from 'random-words'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import './Game.css'
 var i = 0;
+var firstPart = true;
+var timePerPlayer = 5;
+var letterLimit = 3;
+var computerSmartness = 3500;
+var tryLimit = 200;
 function Game() {
 
     const { countdown, start, reset, pause, isRunning } = useCountdownTimer({
-        timer: 1000 * 8, autostart: true, onExpire: () => { alert('Expired~~ You lost') }, expireImmediate: false
+        timer: 1000 * timePerPlayer, autostart: true, onExpire: () => { alert('Expired~~ You lost') }, expireImmediate: false
     });
 
 
@@ -31,7 +37,8 @@ function Game() {
 
 
     const computerThought = (phrase, tries, current) => {
-        if (tries < 1000) {
+        start();
+        if (tries < tryLimit) {
             if (!current.includes(phrase)) {
                 let temp = randomWords()
                 setComputerGenerated(temp)
@@ -39,18 +46,23 @@ function Game() {
                 if (!temp.includes(phrase))
                     computerThought(phrase, tries + 1, temp);
                 else {
-                    Axios.get(`https://api.dictionaryapi.dev/api/v2/entries/en_US/${temp}`)
-                        .then(response => setMeaning(response.data.map(data => data.meanings.map(meaning => meaning.definitions.map(def => def.definition)))))
-
+                   
                     setTimeout(() => {
                         setActivePlayer(0)
                         setRandomWord(randomWords())
                         setComputerGenerated('')
                         resetTimer()
-                    }, 2500);
+                    }, 500);
 
                 }
 
+            } else {
+                setTimeout(() => {
+                    setActivePlayer(0)
+                    setRandomWord(randomWords())
+                    setComputerGenerated('')
+                    resetTimer()
+                }, 500);
             }
 
         } else {
@@ -60,53 +72,70 @@ function Game() {
                 setActivePlayer(0)
                 setRandomWord(randomWords())
                 setComputerGenerated('')
-
-            }, 2500);
+                resetTimer()
+            }, 1500);
         }
     }
     const submitHandler = (e) => {
         e.preventDefault();
 
-        if (inputText.includes(randomWord.slice(0, 2))) {
+        if (inputText.includes(firstPart === true ? randomWord.slice(0, letterLimit) : randomWord.slice(-letterLimit))) {
 
             fetch(`https://api.dictionaryapi.dev/api/v2/entries/en_US/${inputText}`)
                 .then((response) => {
                     console.log(response)
                     if (response.status === 200) {
+                        resetTimer();
                         setActivePlayer(1)
                         setFeedback('Success')
                         let next = randomWords()
                         setRandomWord(next)
-                        resetTimer()
-                        Axios.get(`https://api.dictionaryapi.dev/api/v2/entries/en_US/${inputText}`)
-                            .then(response => setMeaning(response.data.map(data => data.meanings.map(meaning => meaning.definitions.map(def => def.definition)))))
+
 
 
                         setInputText('');
 
                         setTimeout(() => {
-                            computerThought(next.slice(0, 2), 1, computerGenerated);
-                        }, 1500);
+                            computerThought(firstPart === true ? next.slice(0, letterLimit) : next.slice(-letterLimit), 1, computerGenerated);
+                        }, computerSmartness);
 
 
 
                     }
                     else {
-                        setFeedback('Not a word')
+                        toast.error('Not a word', {
+                            position: "top-center",
+                            autoClose: 800,
+                            hideProgressBar: false,
+                            closeOnClick: true,
+                            pauseOnHover: false,
+                            draggable: true,
+                            progress: undefined,
+                        });
                     }
 
                 })
 
         } else {
-            setFeedback('does not contain given phrase')
+            toast.error('Does not contain phrase', {
+                position: "top-center",
+                autoClose: 800,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                progress: undefined,
+            });
             setInputText('');
         }
 
     }
     return (
         <div className="game__wrapper">
+
             <div className="compass">
-                <img className={activePlayer === 0 ? "compass__img" : "compass__img rotate__right"} src="https://res.cloudinary.com/dpjkblzgf/image/upload/v1628278873/compass_rokfyq.png" />
+                <img className={activePlayer === 0 ? "compass__img" : "compass__img rotate__right"} src="https://res.cloudinary.com/dpjkblzgf/image/upload/v1628314946/compass_rokfyq_xcxdk1.png" />
+                <span>{firstPart === true ? randomWord.slice(0, letterLimit) : randomWord.slice(-letterLimit)}</span>
             </div>
 
             <div className="game">
@@ -114,43 +143,63 @@ function Game() {
                 <div className={activePlayer === 0 ? "leftScreen active" : "leftScreen"}>
                     <h1 className="turn">Your turn </h1>
                     <img className="porfile__pic" src="https://res.cloudinary.com/dpjkblzgf/image/upload/v1628277374/person_f2pneg.png" />
-                    <h1>{randomWord.slice(0, 2)}</h1>
-                    <h2>Computer Generated : {computerGenerated}</h2>
-                    <h2>Feedback: {feedback}</h2>
+                    <div className="centeredContent">
+                        <h1 className="guess">{inputText ? inputText : null} &nbsp;</h1>
+
+                        {/* <h2>Feedback: {feedback}</h2> */}
 
 
-                    <h2>Meaning: </h2>
+                        {/* <h2>Meaning: </h2>
                     {meaning.map(meaningItem =>
                         <h3 key={++i}>{meaningItem}</h3>
-                    )}
+                    )} */}
 
 
+                        {/* <div>{countdown / 1000}</div>
+                                <button onClick={start}>Start</button>
+                                <button onClick={resetTimer}>Reset</button> */}
+                        <div className="centeredContentDiv">
+                            {activePlayer === 0 ? countdown / 1000 : timePerPlayer}
+                        </div>
 
-                    <div>{countdown / 1000}</div>
-                    <button onClick={start}>Start</button>
-                    <button onClick={resetTimer}>Reset</button>
+                    </div>
                 </div>
-
+                <ToastContainer
+                    position="top-center"
+                    autoClose={700}
+                    hideProgressBar={false}
+                    newestOnTop={false}
+                    closeOnClick
+                    rtl={false}
+                    pauseOnFocusLoss
+                    draggable
+                    pauseOnHover={false}
+                />
 
                 <div className={activePlayer === 0 ? "rightScreen" : "rightScreen active"}>
                     <h1 className="turn">CPU turn</h1>
                     <img className="porfile__pic" src="https://res.cloudinary.com/dpjkblzgf/image/upload/v1628278268/robot_hp6q1q.png" />
 
-                    <h1>{randomWord.slice(0, 2)}</h1>
-                    <h2>Computer Generated : {computerGenerated}</h2>
-                    <h2>Feedback: {feedback}</h2>
+                    <div className="centeredContent">
+                        <h1 className="guess">{computerGenerated ? computerGenerated : null} &nbsp;</h1>
+
+                        {/* <h2>Feedback: {feedback}</h2> */}
 
 
-                    <h2>Meaning: </h2>
+                        {/* <h2>Meaning: </h2>
                     {meaning.map(meaningItem =>
                         <h3 key={++i}>{meaningItem}</h3>
-                    )}
+                    )} */}
 
 
+                        {/* <div>{countdown / 1000}</div>
+                                <button onClick={start}>Start</button>
+                                <button onClick={resetTimer}>Reset</button> */}
+                        <div className="centeredContentDiv">
+                            {activePlayer === 1 ? countdown / 1000 : timePerPlayer}
+                        </div>
 
-                    <div>{countdown / 1000}</div>
-                    <button onClick={start}>Start</button>
-                    <button onClick={resetTimer}>Reset</button>
+                    </div>
                 </div>
 
             </div>
@@ -159,7 +208,7 @@ function Game() {
                 <form onSubmit={(e) => submitHandler(e)}>
                     <div className="input__container">
                         {activePlayer === 0 ?
-                            <input id="inputID" type="text" value={inputText} onChange={(e) => setInputText(e.target.value)} />
+                            <input id="inputID" type="text" value={inputText} onChange={(e) => setInputText(e.target.value.toLowerCase())} />
                             :
                             <input id="inputID" type="text" value={inputText} />
                         }

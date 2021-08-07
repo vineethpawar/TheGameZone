@@ -1,6 +1,6 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
-
+@import url('https://fonts.googleapis.com/css2?family=Abril+Fatface&display=swap');
 .game__wrapper{
     display: flex;
     flex-direction: column;
@@ -66,7 +66,7 @@
     color:white;
     border-radius: 5px;
     padding: 5px 15px;
-    background-color: rgb(25, 101, 172);
+    background-color: rgb(40, 101, 172);
     border:none;
     outline:none;
     font-size: 16px;
@@ -95,7 +95,26 @@
     
 }
 
+.centeredContent{
+    padding-top: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
 
+.centeredContentDiv{
+   display: flex;
+   color:white;
+   justify-content: center;
+   align-items: center;
+   margin-top: 50px;
+   height: 50px;
+   width: 50px;
+   background-color: rgb(182, 56, 56);
+   border-radius: 50%;
+   font-family: 'Abril Fatface', cursive;
+   font-size: 30px;
+}
 
 .compass__img{
     user-select: none;
@@ -110,8 +129,28 @@
     display: flex;
     top:50%;
     left:50%;
-    transition:1s all ease-in-out;
+    transition:0.5s all ease-in-out;
     transform: translate(-50%,-50%) rotate(-90deg);
+}
+
+.compass > span{
+    color:white;
+    user-select: none;
+    -webkit-user-drag: none;
+    -khtml-user-drag: none;
+    -moz-user-drag: none;
+    -o-user-drag: none;
+    position:absolute;
+    height: 60px;
+    width: 60px;
+    border-radius: 50%;
+    top:50%;
+    left:50%;
+    line-height: 60px;
+    font-size: 30px;
+    transform: translate(-50%,-50%);
+    background-color: rgb(59, 171, 199);
+    text-align: center;
 }
 
 .rotate__right{
